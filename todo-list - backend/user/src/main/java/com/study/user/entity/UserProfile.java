@@ -11,7 +11,6 @@ public class UserProfile extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@GenericGenerator(name = "native", strategy = "native")
     private Long id;
 
     private String name;

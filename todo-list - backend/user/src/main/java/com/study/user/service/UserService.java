@@ -8,7 +8,10 @@ import com.study.user.exceptions.SameUsernameException;
 import com.study.user.exceptions.UsernameNotFoundException;
 import com.study.user.mapper.UserMapper;
 import com.study.user.repository.UserRepository;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -51,11 +54,19 @@ public class UserService {
         }
     }
 
+    @Transactional
+    @Modifying
     public void deleteUser(String username){
         Optional<UserProfile> userProfile = getUserByUsername(username);
-//        if(userProfile.isPresent()){
-//
-//        }
+        if(userProfile.isPresent()){
+            try{
+               userRepository.deleteByUsername(username);
+            } catch (RuntimeException e){
+                throw new DataAccessResourceFailureException("Something went wrong deleting the username");
+            }
+        } else {
+            throw new UsernameNotFoundException();
+        }
     }
 
     public Optional<UserProfile> getUserByUsername(String username){

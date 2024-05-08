@@ -36,10 +36,11 @@ public class UserController {
         userService.changePassword(passwordDTO);
     }
     //Create DELETE
+
     @DeleteMapping("{username}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> deleteUser(@PathVariable String username){
-
+        userService.deleteUser(username);
         return ResponseEntity.noContent().build();
     }
     //FIND by ID
