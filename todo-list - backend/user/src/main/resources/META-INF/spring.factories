@@ -1,0 +1,1 @@
+org.springframework.context.ApplicationContextInitializer=com.study.user.security.io.Base64ProtocolResolver

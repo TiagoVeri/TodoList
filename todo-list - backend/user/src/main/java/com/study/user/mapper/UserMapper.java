@@ -5,6 +5,7 @@ import com.study.user.dto.UserLoginDTO;
 import com.study.user.dto.UserPasswordDTO;
 import com.study.user.entity.UserProfile;
 
+
 public class UserMapper {
 
     private UserMapper(){}
@@ -12,7 +13,7 @@ public class UserMapper {
         UserProfile user = new UserProfile();
         user.setUsername(loginDTO.getUsername());
         user.setPassword(loginDTO.getPassword());
-        user.setRole(loginDTO.getRole());
+        user.setRoles(loginDTO.getRoles());
         return user;
     }
 
@@ -20,7 +21,7 @@ public class UserMapper {
         UserLoginDTO userDTO = new UserLoginDTO();
         userDTO.setUsername(user.getUsername());
         userDTO.setPassword(user.getPassword());
-        userDTO.setRole(user.getRole());
+        userDTO.setRoles(user.getRoles());
         return userDTO;
     }
 
@@ -30,6 +31,7 @@ public class UserMapper {
         userDTO.setEmail(user.getEmail());
         userDTO.setUsername(user.getUsername());
         userDTO.setAddress(user.getAddress());
+        userDTO.setRoles(user.getRoles());
         return userDTO;
     }
 
@@ -38,6 +40,7 @@ public class UserMapper {
         user.setEmail(infoDTO.getEmail());
         user.setUsername(infoDTO.getUsername());
         user.setAddress(infoDTO.getAddress());
+        user.setRoles(infoDTO.getRoles());
         return user;
     }
 

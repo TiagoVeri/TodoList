@@ -1,4 +1,4 @@
-package com.study.user.auth;
+package com.study.user.audit;
 
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.stereotype.Component;

@@ -9,7 +9,10 @@ import com.study.user.exceptions.UsernameNotFoundException;
 import com.study.user.mapper.UserMapper;
 import com.study.user.repository.UserRepository;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,23 +24,29 @@ import static com.study.user.mapper.UserMapper.*;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public void createUserLogin(UserLoginDTO userLoginDTO){
         if(getUserByUsername(userLoginDTO.getUsername()).isPresent()){
             throw new SameUsernameException();
         }
         UserProfile user = userLoginDTOToUser(userLoginDTO);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
+    @Transactional
     public void changePassword(UserPasswordDTO passwordDTO){
         Optional<UserProfile> userOptional = getUserByUsername(passwordDTO.getUsername());
         if(userOptional.isPresent()){
             UserProfile user = userPasswordDTOToUser(passwordDTO, userOptional.get());
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
         } else {
             throw new UsernameNotFoundException();
@@ -71,5 +80,19 @@ public class UserService {
 
     public Optional<UserProfile> getUserByUsername(String username){
         return userRepository.findByUsername(username);
+    }
+
+    public UserInfoDTO findUser(String username){
+        Optional<UserProfile> userOptional = getUserByUsername(username);
+        if(userOptional.isPresent()){
+            return UserMapper.userToUserInfoDTO(userOptional.get());
+        } else{
+            throw new UsernameNotFoundException();
+        }
+    }
+
+    public Page<UserInfoDTO> findAllUsers(Pageable pageable){
+         return userRepository.findAll(pageable)
+                                    .map(UserMapper::userToUserInfoDTO);
     }
 }
